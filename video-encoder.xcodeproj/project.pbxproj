@@ -1,0 +1,558 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		F8FCDD652E5421F50013CA55 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F8FCDD4C2E5421F30013CA55 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F8FCDD532E5421F30013CA55;
+			remoteInfo = "video-encoder";
+		};
+		F8FCDD6F2E5421F50013CA55 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F8FCDD4C2E5421F30013CA55 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F8FCDD532E5421F30013CA55;
+			remoteInfo = "video-encoder";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		F8FCDD542E5421F30013CA55 /* video-encoder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "video-encoder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8FCDD642E5421F50013CA55 /* video-encoderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "video-encoderTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8FCDD6E2E5421F50013CA55 /* video-encoderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "video-encoderUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		F8FCDD562E5421F30013CA55 /* video-encoder */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "video-encoder";
+			sourceTree = "<group>";
+		};
+		F8FCDD672E5421F50013CA55 /* video-encoderTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "video-encoderTests";
+			sourceTree = "<group>";
+		};
+		F8FCDD712E5421F50013CA55 /* video-encoderUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "video-encoderUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F8FCDD512E5421F30013CA55 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8FCDD612E5421F50013CA55 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8FCDD6B2E5421F50013CA55 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F8FCDD4B2E5421F30013CA55 = {
+			isa = PBXGroup;
+			children = (
+				F8FCDD562E5421F30013CA55 /* video-encoder */,
+				F8FCDD672E5421F50013CA55 /* video-encoderTests */,
+				F8FCDD712E5421F50013CA55 /* video-encoderUITests */,
+				F8FCDD552E5421F30013CA55 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F8FCDD552E5421F30013CA55 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F8FCDD542E5421F30013CA55 /* video-encoder.app */,
+				F8FCDD642E5421F50013CA55 /* video-encoderTests.xctest */,
+				F8FCDD6E2E5421F50013CA55 /* video-encoderUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F8FCDD532E5421F30013CA55 /* video-encoder */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F8FCDD782E5421F50013CA55 /* Build configuration list for PBXNativeTarget "video-encoder" */;
+			buildPhases = (
+				F8FCDD502E5421F30013CA55 /* Sources */,
+				F8FCDD512E5421F30013CA55 /* Frameworks */,
+				F8FCDD522E5421F30013CA55 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F8FCDD562E5421F30013CA55 /* video-encoder */,
+			);
+			name = "video-encoder";
+			packageProductDependencies = (
+			);
+			productName = "video-encoder";
+			productReference = F8FCDD542E5421F30013CA55 /* video-encoder.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F8FCDD632E5421F50013CA55 /* video-encoderTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F8FCDD7B2E5421F50013CA55 /* Build configuration list for PBXNativeTarget "video-encoderTests" */;
+			buildPhases = (
+				F8FCDD602E5421F50013CA55 /* Sources */,
+				F8FCDD612E5421F50013CA55 /* Frameworks */,
+				F8FCDD622E5421F50013CA55 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F8FCDD662E5421F50013CA55 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F8FCDD672E5421F50013CA55 /* video-encoderTests */,
+			);
+			name = "video-encoderTests";
+			packageProductDependencies = (
+			);
+			productName = "video-encoderTests";
+			productReference = F8FCDD642E5421F50013CA55 /* video-encoderTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		F8FCDD6D2E5421F50013CA55 /* video-encoderUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F8FCDD7E2E5421F50013CA55 /* Build configuration list for PBXNativeTarget "video-encoderUITests" */;
+			buildPhases = (
+				F8FCDD6A2E5421F50013CA55 /* Sources */,
+				F8FCDD6B2E5421F50013CA55 /* Frameworks */,
+				F8FCDD6C2E5421F50013CA55 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F8FCDD702E5421F50013CA55 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F8FCDD712E5421F50013CA55 /* video-encoderUITests */,
+			);
+			name = "video-encoderUITests";
+			packageProductDependencies = (
+			);
+			productName = "video-encoderUITests";
+			productReference = F8FCDD6E2E5421F50013CA55 /* video-encoderUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F8FCDD4C2E5421F30013CA55 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 1640;
+				TargetAttributes = {
+					F8FCDD532E5421F30013CA55 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					F8FCDD632E5421F50013CA55 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = F8FCDD532E5421F30013CA55;
+					};
+					F8FCDD6D2E5421F50013CA55 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = F8FCDD532E5421F30013CA55;
+					};
+				};
+			};
+			buildConfigurationList = F8FCDD4F2E5421F30013CA55 /* Build configuration list for PBXProject "video-encoder" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F8FCDD4B2E5421F30013CA55;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = F8FCDD552E5421F30013CA55 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F8FCDD532E5421F30013CA55 /* video-encoder */,
+				F8FCDD632E5421F50013CA55 /* video-encoderTests */,
+				F8FCDD6D2E5421F50013CA55 /* video-encoderUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F8FCDD522E5421F30013CA55 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8FCDD622E5421F50013CA55 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8FCDD6C2E5421F50013CA55 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F8FCDD502E5421F30013CA55 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8FCDD602E5421F50013CA55 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8FCDD6A2E5421F50013CA55 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F8FCDD662E5421F50013CA55 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F8FCDD532E5421F30013CA55 /* video-encoder */;
+			targetProxy = F8FCDD652E5421F50013CA55 /* PBXContainerItemProxy */;
+		};
+		F8FCDD702E5421F50013CA55 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F8FCDD532E5421F30013CA55 /* video-encoder */;
+			targetProxy = F8FCDD6F2E5421F50013CA55 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		F8FCDD762E5421F50013CA55 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = UA4DC3ZN8N;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F8FCDD772E5421F50013CA55 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = UA4DC3ZN8N;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		F8FCDD792E5421F50013CA55 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "video-encoder/video_encoder.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UA4DC3ZN8N;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.pengx17.video-encoder";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		F8FCDD7A2E5421F50013CA55 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "video-encoder/video_encoder.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UA4DC3ZN8N;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.pengx17.video-encoder";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		F8FCDD7C2E5421F50013CA55 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UA4DC3ZN8N;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.pengx17.video-encoderTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/video-encoder.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/video-encoder";
+			};
+			name = Debug;
+		};
+		F8FCDD7D2E5421F50013CA55 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UA4DC3ZN8N;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.pengx17.video-encoderTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/video-encoder.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/video-encoder";
+			};
+			name = Release;
+		};
+		F8FCDD7F2E5421F50013CA55 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UA4DC3ZN8N;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.pengx17.video-encoderUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "video-encoder";
+			};
+			name = Debug;
+		};
+		F8FCDD802E5421F50013CA55 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = UA4DC3ZN8N;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.pengx17.video-encoderUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = "video-encoder";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F8FCDD4F2E5421F30013CA55 /* Build configuration list for PBXProject "video-encoder" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8FCDD762E5421F50013CA55 /* Debug */,
+				F8FCDD772E5421F50013CA55 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F8FCDD782E5421F50013CA55 /* Build configuration list for PBXNativeTarget "video-encoder" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8FCDD792E5421F50013CA55 /* Debug */,
+				F8FCDD7A2E5421F50013CA55 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F8FCDD7B2E5421F50013CA55 /* Build configuration list for PBXNativeTarget "video-encoderTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8FCDD7C2E5421F50013CA55 /* Debug */,
+				F8FCDD7D2E5421F50013CA55 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F8FCDD7E2E5421F50013CA55 /* Build configuration list for PBXNativeTarget "video-encoderUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8FCDD7F2E5421F50013CA55 /* Debug */,
+				F8FCDD802E5421F50013CA55 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F8FCDD4C2E5421F30013CA55 /* Project object */;
+}
