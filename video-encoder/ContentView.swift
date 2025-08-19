@@ -13,35 +13,44 @@ struct ContentView: View {
     @State private var isHoveringDropZone = false
     
     var body: some View {
+        mainContentView
+            .background(.ultraThinMaterial)
+            .background(WindowAccessor())
+            .fixedSize(horizontal: false, vertical: true)
+    }
+    
+    private var mainContentView: some View {
         ZStack {
-            // Transparent background with glass effect
-            Color.clear
-                .ignoresSafeArea()
-                .background(.ultraThinMaterial)
-                .background(WindowAccessor())
+            // Enhanced glass background with subtle gradient
+            LinearGradient(
+                colors: [
+                    Color.clear,
+                    Color.primary.opacity(0.02)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
             
             VStack(spacing: 0) {
-                // Custom title bar area
+                // Simple title bar area (no buttons)
                 HStack {
-                    // Traffic light buttons area - leave space for them
                     Color.clear
                         .frame(width: 70, height: 28)
-                    
                     Spacer()
                 }
                 .frame(height: 28)
-                .background(Color.clear)
+                .background(.ultraThinMaterial)
                 
-                // Main content
                 VStack(spacing: 24) {
                     if !viewModel.ffmpegAvailable {
                         ffmpegMissingView
                     } else {
-                        // App Header
-                        appHeader
+                        // Enhanced App Header with glass effects
+                        enhancedAppHeader
                         
                         if viewModel.inputVideoURL == nil {
-                            dropArea
+                            enhancedDropArea
                         } else {
                             videoLoadedContent
                         }
@@ -51,24 +60,229 @@ struct ContentView: View {
                 .padding(.top, 10)
                 .padding(.bottom, 50)
                 
-                Spacer(minLength: 0)
-                
-                // Footer with glass effect
+                // Floating footer with enhanced glass effect
                 if viewModel.ffmpegAvailable && !viewModel.ffmpegVersion.isEmpty {
-                    VStack(spacing: 0) {
-                        Divider()
-                        ffmpegInfoFooter
-                            .padding(.horizontal, 30)
-                            .padding(.vertical, 12)
-                    }
-                    .background(.thinMaterial)
-        .cornerRadius(12)
+                    floatingFooter
                 }
             }
         }
         .frame(minWidth: 700, idealWidth: 700)
         .fixedSize(horizontal: false, vertical: true)
     }
+    
+    // MARK: - Enhanced Glass Components
+    
+    
+    private var enhancedAppHeader: some View {
+        HStack {
+            // Animated app icon with glass effect
+            ZStack {
+                Circle()
+                    .fill(.regularMaterial)
+                    .frame(width: 40, height: 40)
+                    .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
+                
+                Image(systemName: "video.badge.waveform")
+                    .font(.system(size: 20))
+                    .foregroundStyle(Color.accentColor)
+                    .symbolRenderingMode(.hierarchical)
+                    .animation(.easeInOut(duration: 0.3), value: viewModel.ffmpegAvailable)
+            }
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Video Encoder")
+                    .font(.system(size: 18, weight: .bold, design: .rounded))
+                    .foregroundColor(.primary)
+                Text("Compress and convert your videos with ease")
+                    .font(.system(size: 12))
+                    .foregroundColor(.secondary)
+            }
+            
+            Spacer()
+            
+            // Glass status badge
+            HStack(spacing: 8) {
+                Circle()
+                    .fill(viewModel.ffmpegAvailable ? .green : .red)
+                    .frame(width: 8, height: 8)
+                    .shadow(color: viewModel.ffmpegAvailable ? .green : .red, radius: 2)
+                
+                Text(viewModel.ffmpegAvailable ? "Ready" : "Setup Required")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(.secondary)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(
+                        LinearGradient(
+                            colors: [.white.opacity(0.3), .clear],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        ),
+                        lineWidth: 1
+                    )
+            )
+        }
+        .padding(.vertical, 12)
+        .padding(.horizontal, 20)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20))
+        .shadow(color: .black.opacity(0.05), radius: 10, y: 5)
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(
+                    LinearGradient(
+                        colors: [.white.opacity(0.2), .clear],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 1
+                )
+        )
+    }
+    
+    private var enhancedDropArea: some View {
+        VStack(spacing: 24) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 24)
+                    .fill(.ultraThinMaterial)
+                    .background(
+                        RoundedRectangle(cornerRadius: 24)
+                            .fill(
+                                LinearGradient(
+                                    colors: [
+                                        Color.accentColor.opacity(0.03),
+                                        Color.clear
+                                    ],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 24)
+                            .stroke(
+                                isDragging ? 
+                                LinearGradient(
+                                    colors: [Color.accentColor.opacity(0.8), Color.accentColor.opacity(0.4)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ) :
+                                LinearGradient(
+                                    colors: [Color.secondary.opacity(0.3), Color.clear],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                ),
+                                style: StrokeStyle(lineWidth: isDragging ? 3 : 2, dash: isDragging ? [] : [12, 8])
+                            )
+                    )
+                    .shadow(color: .black.opacity(0.05), radius: 20, y: 10)
+                    .animation(.easeInOut(duration: 0.3), value: isDragging)
+                    .scaleEffect(isHoveringDropZone ? 1.02 : 1.0)
+                    .animation(.easeInOut(duration: 0.2), value: isHoveringDropZone)
+                
+                VStack(spacing: 24) {
+                    // Enhanced floating glass icon
+                    ZStack {
+                        Circle()
+                            .fill(.regularMaterial)
+                            .frame(width: 120, height: 120)
+                            .shadow(color: .black.opacity(0.1), radius: 8, y: 4)
+                            .overlay(
+                                Circle()
+                                    .stroke(
+                                        LinearGradient(
+                                            colors: [.white.opacity(0.3), .clear],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        ),
+                                        lineWidth: 2
+                                    )
+                            )
+                        
+                        Image(systemName: "arrow.down.doc.fill")
+                            .font(.system(size: 50))
+                            .foregroundStyle(Color.accentColor)
+                            .symbolRenderingMode(.hierarchical)
+                            .scaleEffect(isDragging ? 1.1 : 1.0)
+                            .animation(.easeInOut(duration: 0.3), value: isDragging)
+                    }
+                    
+                    VStack(spacing: 8) {
+                        Text("Drop your video here")
+                            .font(.system(size: 22, weight: .semibold, design: .rounded))
+                            .foregroundColor(.primary)
+                        
+                        Text("or click to browse")
+                            .font(.system(size: 14))
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    Button(action: { selectFile() }) {
+                        Label("Choose Video", systemImage: "folder")
+                            .frame(width: 160)
+                    }
+                    .buttonStyle(GlassProminentButtonStyle())
+                    .controlSize(.large)
+                    
+                    Text("Supports MP4, MOV, AVI, MKV and more")
+                        .font(.system(size: 12))
+                        .foregroundColor(Color.secondary.opacity(0.7))
+                }
+                .padding(50)
+            }
+            .frame(height: 320)
+            .onDrop(of: [.movie, .quickTimeMovie, .mpeg4Movie], isTargeted: $isDragging) { providers in
+                handleDrop(providers: providers)
+            }
+            .onHover { hovering in
+                isHoveringDropZone = hovering
+            }
+        }
+    }
+    
+    private var floatingFooter: some View {
+        VStack(spacing: 0) {
+            Divider()
+                .background(.secondary.opacity(0.3))
+            
+            HStack {
+                Image(systemName: "checkmark.seal.fill")
+                    .foregroundColor(.green)
+                    .font(.system(size: 14))
+                Text(viewModel.ffmpegVersion)
+                    .font(.system(size: 12))
+                    .foregroundColor(.secondary)
+                    .lineLimit(1)
+                Spacer()
+                if let path = viewModel.ffmpegPath {
+                    Text(path)
+                        .font(.system(size: 11, design: .monospaced))
+                        .foregroundColor(Color.secondary.opacity(0.7))
+                        .lineLimit(1)
+                }
+            }
+            .padding(.horizontal, 30)
+            .padding(.vertical, 16)
+        }
+        .background(.regularMaterial)
+        .overlay(
+            Rectangle()
+                .fill(
+                    LinearGradient(
+                        colors: [.white.opacity(0.1), .clear],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .frame(height: 1),
+            alignment: .top
+        )
+    }
+    
+    // MARK: - Original Components (preserved)
     
     private var appHeader: some View {
         HStack {
@@ -138,7 +352,7 @@ struct ContentView: View {
                 Label("Change Video", systemImage: "arrow.triangle.2.circlepath")
                     .font(.system(size: 13))
             }
-            .buttonStyle(.bordered)
+            .buttonStyle(GlassButtonStyle())
             .controlSize(.small)
         }
         .padding(16)
@@ -432,7 +646,7 @@ struct ContentView: View {
                     TextField("2000", text: $viewModel.targetBitrate)
                         .frame(width: 200)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .onChange(of: viewModel.targetBitrate) { _ in
+                        .onChange(of: viewModel.targetBitrate) {
                             viewModel.calculateEstimatedSize()
                         }
                 }
@@ -510,21 +724,21 @@ struct ContentView: View {
     }
     
     private var actionButtons: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 16) {
             Button(action: { clearVideo() }) {
                 Label("Clear", systemImage: "xmark.circle")
-                    .frame(width: 100)
+                    .frame(width: 120)
             }
-            .buttonStyle(.bordered)
+            .buttonStyle(GlassButtonStyle())
             .controlSize(.large)
             
             Spacer()
             
             Button(action: { viewModel.startEncoding() }) {
                 Label("Start Encoding", systemImage: "play.fill")
-                    .frame(width: 160)
+                    .frame(width: 180)
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(GlassProminentButtonStyle())
             .controlSize(.large)
             .disabled(viewModel.encodingState == .encoding)
         }
@@ -765,8 +979,99 @@ struct InfoPill: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
-        .background(.ultraThinMaterial)
-        .cornerRadius(8)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10))
+        .shadow(color: .black.opacity(0.05), radius: 2, y: 1)
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(
+                    LinearGradient(
+                        colors: [.white.opacity(0.2), .clear],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    ),
+                    lineWidth: 1
+                )
+        )
+    }
+}
+
+// MARK: - Glass Button Styles
+
+
+struct GlassButtonStyle: ButtonStyle {
+    @State private var isHovered = false
+    
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
+            .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(
+                        LinearGradient(
+                            colors: [.white.opacity(0.3), .clear],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        ),
+                        lineWidth: 1
+                    )
+            )
+            .scaleEffect(configuration.isPressed ? 0.98 : (isHovered ? 1.02 : 1.0))
+            .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
+            .animation(.easeInOut(duration: 0.15), value: isHovered)
+            .onHover { hovering in
+                isHovered = hovering
+            }
+    }
+}
+
+struct GlassProminentButtonStyle: ButtonStyle {
+    @State private var isHovered = false
+    
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .padding(.horizontal, 20)
+            .padding(.vertical, 14)
+            .background(
+                ZStack {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    Color.accentColor.opacity(0.9),
+                                    Color.accentColor
+                                ],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
+                    
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(.regularMaterial)
+                        .opacity(0.2)
+                }
+            )
+            .foregroundColor(.white)
+            .shadow(color: Color.accentColor.opacity(0.4), radius: 8, y: 4)
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(
+                        LinearGradient(
+                            colors: [.white.opacity(0.4), .clear],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        ),
+                        lineWidth: 1
+                    )
+            )
+            .scaleEffect(configuration.isPressed ? 0.98 : (isHovered ? 1.02 : 1.0))
+            .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
+            .animation(.easeInOut(duration: 0.15), value: isHovered)
+            .onHover { hovering in
+                isHovered = hovering
+            }
     }
 }
 

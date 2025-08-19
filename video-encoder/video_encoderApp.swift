@@ -14,7 +14,7 @@ struct video_encoderApp: App {
             ContentView()
         }
         .windowResizability(.contentSize)
-        .defaultSize(width: 700, height: 600)
+        .defaultSize(width: 700, height: 400)
         .windowStyle(.hiddenTitleBar)
     }
 }
