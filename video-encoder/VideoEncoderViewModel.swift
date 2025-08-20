@@ -167,7 +167,10 @@ class VideoEncoderViewModel: ObservableObject {
             return
         }
         
-        let estimatedBytes = (Double(bitrate) * 1000 * videoDuration) / 8
+        // Adjust duration by playback speed (faster -> shorter duration, slower -> longer)
+        let speedMultiplier = selectedSpeed.multiplier
+        let adjustedDuration = videoDuration / speedMultiplier
+        let estimatedBytes = (Double(bitrate) * 1000 * adjustedDuration) / 8
         estimatedOutputSize = ByteCountFormatter.string(fromByteCount: Int64(estimatedBytes), countStyle: .file)
     }
     
@@ -203,11 +206,35 @@ class VideoEncoderViewModel: ObservableObject {
             "-preset", selectedPreset.ffmpegValue,
             "-b:v", "\(targetBitrate)k"
         ]
+
+        // Apply playback speed using setpts (video) and atempo (audio)
+        // Video speed: setpts = 1/speed * PTS
+        let speed = selectedSpeed.multiplier
+        if speed != 1.0 {
+            let setpts = String(format: "%.6f*PTS", 1.0 / speed)
+            arguments.append(contentsOf: ["-filter:v", "setpts=\(setpts)"])
+            // Audio atempo supports 0.5..2.0; chain filters if beyond range
+            var remaining = speed
+            var atempoFilters: [String] = []
+            while remaining > 2.0 {
+                atempoFilters.append("atempo=2.0")
+                remaining /= 2.0
+            }
+            while remaining < 0.5 {
+                atempoFilters.append("atempo=0.5")
+                remaining *= 2.0
+            }
+            if abs(remaining - 1.0) > 0.0001 {
+                atempoFilters.append(String(format: "atempo=%.6f", remaining))
+            }
+            if !atempoFilters.isEmpty {
+                arguments.append(contentsOf: ["-filter:a", atempoFilters.joined(separator: ",")])
+            }
+        }
         
         // Add FPS option if not keeping original
-        if selectedFPS != .keep {
-            let fps = selectedFPS == .fps24 ? "24" : selectedFPS == .fps30 ? "30" : "60"
-            arguments.append(contentsOf: ["-r", fps])
+        if selectedFPS != .keep, let fpsValue = selectedFPS.fpsValue {
+            arguments.append(contentsOf: ["-r", fpsValue])
         }
         
         // Add custom options if provided
@@ -334,14 +361,35 @@ enum VideoPreset: CaseIterable {
 }
 
 enum FPSOption: CaseIterable {
-    case keep, fps24, fps30, fps60
+    case keep, fps12, fps15, fps24, fps25, fps30, fps48, fps50, fps60, fps120
     
     var displayName: String {
         switch self {
         case .keep: return "Keep Original"
+        case .fps12: return "12 fps"
+        case .fps15: return "15 fps"
         case .fps24: return "24 fps"
+        case .fps25: return "25 fps"
         case .fps30: return "30 fps"
+        case .fps48: return "48 fps"
+        case .fps50: return "50 fps"
         case .fps60: return "60 fps"
+        case .fps120: return "120 fps"
+        }
+    }
+    
+    var fpsValue: String? {
+        switch self {
+        case .keep: return nil
+        case .fps12: return "12"
+        case .fps15: return "15"
+        case .fps24: return "24"
+        case .fps25: return "25"
+        case .fps30: return "30"
+        case .fps48: return "48"
+        case .fps50: return "50"
+        case .fps60: return "60"
+        case .fps120: return "120"
         }
     }
 }
@@ -357,6 +405,17 @@ enum PlaybackSpeed: CaseIterable {
         case .speed1_25: return "1.25x"
         case .speed1_5: return "1.5x"
         case .speed2: return "2x"
+        }
+    }
+    
+    var multiplier: Double {
+        switch self {
+        case .speed0_5: return 0.5
+        case .speed0_75: return 0.75
+        case .speed1: return 1.0
+        case .speed1_25: return 1.25
+        case .speed1_5: return 1.5
+        case .speed2: return 2.0
         }
     }
 }

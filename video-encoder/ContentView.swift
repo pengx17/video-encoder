@@ -9,13 +9,12 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct ContentView: View {
-    @StateObject private var viewModel = VideoEncoderViewModel()
+    @ObservedObject var viewModel: VideoEncoderViewModel
     @State private var isDragging = false
     @State private var isHoveringDropZone = false
 
     var body: some View {
         mainContentView
-            .background(WindowAccessor())
     }
 
     private var mainContentView: some View {
@@ -37,7 +36,7 @@ struct ContentView: View {
             .padding(.top, 20)
             .padding(.bottom, 16)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(NSColor.windowBackgroundColor))
+            .background(.ultraThinMaterial)
 
             // Floating footer with enhanced glass effect
             if viewModel.ffmpegAvailable && !viewModel.ffmpegVersion.isEmpty {
@@ -46,7 +45,8 @@ struct ContentView: View {
         }
         .frame(
             minWidth: viewModel.inputVideoURL != nil ? 1100 : 700,
-            idealWidth: viewModel.inputVideoURL != nil ? 1100 : 700
+            idealWidth: viewModel.inputVideoURL != nil ? 1100 : 700,
+            maxWidth: viewModel.inputVideoURL != nil ? 1600 : 700,
         )
         .fixedSize(horizontal: false, vertical: true)
     }
@@ -255,7 +255,7 @@ struct ContentView: View {
                 // Actions outside ScrollView to avoid shadow clipping
                 actionButtons
             }
-            .frame(minWidth: 400, maxWidth: .infinity, alignment: .top)
+            .frame(width: 480, alignment: .top)
         }
     }
 
@@ -622,6 +622,9 @@ struct ContentView: View {
                         }
                     }
                     .pickerStyle(MenuPickerStyle())
+                    .onChange(of: viewModel.selectedSpeed) {
+                        viewModel.calculateEstimatedSize()
+                    }
                 }
 
                 OptionRow(

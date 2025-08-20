@@ -9,9 +9,10 @@ import SwiftUI
 
 @main
 struct video_encoderApp: App {
+    @StateObject private var viewModel = VideoEncoderViewModel()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(viewModel: viewModel)
         }
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
