@@ -6,34 +6,26 @@ struct InfoPill: View {
     let value: String
     
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 6) {
             Image(systemName: icon)
-                .font(.system(size: 12))
+                .font(.system(size: 11))
                 .foregroundColor(.secondary)
             
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 1) {
                 Text(label)
-                    .font(.system(size: 11))
+                    .font(.system(size: 10))
                     .foregroundColor(Color.secondary.opacity(0.7))
                 Text(value)
-                    .font(.system(size: 13, weight: .medium))
+                    .font(.system(size: 12, weight: .medium))
                     .foregroundColor(.primary)
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10))
-        .shadow(color: .black.opacity(0.05), radius: 2, y: 1)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(Color(NSColor.controlBackgroundColor), in: RoundedRectangle(cornerRadius: 8))
         .overlay(
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(
-                    LinearGradient(
-                        colors: [.white.opacity(0.2), .clear],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    ),
-                    lineWidth: 1
-                )
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(Color.secondary.opacity(0.25), lineWidth: 1)
         )
     }
 }

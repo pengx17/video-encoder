@@ -6,15 +6,16 @@ struct OptionRow<Content: View>: View {
     let content: () -> Content
     
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
             Label(label, systemImage: icon)
-                .font(.system(size: 14))
-                .foregroundColor(.secondary)
-                .frame(width: 140, alignment: .leading)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(.primary.opacity(0.9))
+                .frame(width: 150, alignment: .leading)
             
             Spacer()
             
             content()
+                .frame(maxWidth: 180, alignment: .trailing)
         }
         .padding(.vertical, 4)
     }

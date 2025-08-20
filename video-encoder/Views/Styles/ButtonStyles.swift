@@ -13,8 +13,8 @@ struct GlassButtonStyle: ButtonStyle {
             configuration.label
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
-                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
-                .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
+                .background(Color(NSColor.controlBackgroundColor), in: RoundedRectangle(cornerRadius: 12))
+                .shadow(color: .black.opacity(0.1), radius: 3, y: 2)
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
                         .stroke(
@@ -64,12 +64,12 @@ struct GlassProminentButtonStyle: ButtonStyle {
                             )
                         
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(.regularMaterial)
-                            .opacity(0.2)
+                            .fill(Color.white)
+                            .opacity(0.1)
                     }
                 )
                 .foregroundColor(.white)
-                .shadow(color: Color.accentColor.opacity(0.4), radius: 8, y: 4)
+                .shadow(color: Color.accentColor.opacity(0.3), radius: 6, y: 3)
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
                         .stroke(

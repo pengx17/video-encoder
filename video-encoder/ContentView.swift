@@ -33,11 +33,11 @@ struct ContentView: View {
                     }
                 }
             }
-            .padding(.horizontal, 30)
-            .padding(.top, 24)
-            .padding(.bottom, 20)
+            .padding(.horizontal, 24)
+            .padding(.top, 20)
+            .padding(.bottom, 16)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(.ultraThinMaterial)
+            .background(Color(NSColor.windowBackgroundColor))
 
             // Floating footer with enhanced glass effect
             if viewModel.ffmpegAvailable && !viewModel.ffmpegVersion.isEmpty {
@@ -45,8 +45,8 @@ struct ContentView: View {
             }
         }
         .frame(
-            minWidth: viewModel.inputVideoURL != nil ? 1800 : 700,
-            idealWidth: viewModel.inputVideoURL != nil ? 1800 : 700
+            minWidth: viewModel.inputVideoURL != nil ? 1100 : 700,
+            idealWidth: viewModel.inputVideoURL != nil ? 1100 : 700
         )
         .fixedSize(horizontal: false, vertical: true)
     }
@@ -57,13 +57,13 @@ struct ContentView: View {
         VStack(spacing: 24) {
             ZStack {
                 RoundedRectangle(cornerRadius: 24)
-                    .fill(.ultraThinMaterial)
+                    .fill(Color(NSColor.controlBackgroundColor))
                     .background(
                         RoundedRectangle(cornerRadius: 24)
                             .fill(
                                 LinearGradient(
                                     colors: [
-                                        Color.accentColor.opacity(0.03),
+                                        Color.accentColor.opacity(0.05),
                                         Color.clear,
                                     ],
                                     startPoint: .topLeading,
@@ -85,7 +85,7 @@ struct ContentView: View {
                                     )
                                     : LinearGradient(
                                         colors: [
-                                            Color.secondary.opacity(0.3),
+                                            Color.secondary.opacity(0.5),
                                             Color.clear,
                                         ],
                                         startPoint: .top,
@@ -108,7 +108,7 @@ struct ContentView: View {
                     // Enhanced floating glass icon
                     ZStack {
                         Circle()
-                            .fill(.regularMaterial)
+                            .fill(Color(NSColor.controlBackgroundColor).opacity(0.9))
                             .frame(width: 120, height: 120)
                             .shadow(color: .black.opacity(0.1), radius: 8, y: 4)
                             .overlay(
@@ -197,12 +197,13 @@ struct ContentView: View {
                         .font(.system(size: 11, design: .monospaced))
                         .foregroundColor(Color.secondary.opacity(0.7))
                         .lineLimit(1)
+                        .truncationMode(.middle)
                 }
             }
-            .padding(.horizontal, 30)
-            .padding(.vertical, 16)
+            .padding(.horizontal, 24)
+            .padding(.vertical, 12)
         }
-        .background(.regularMaterial)
+        .background(Color(NSColor.controlBackgroundColor))
         .overlay(
             Rectangle()
                 .fill(
@@ -218,33 +219,43 @@ struct ContentView: View {
     }
 
     private var videoLoadedContent: some View {
-        HStack(alignment: .top, spacing: 24) {
-            // Left column: mini drop zone + video preview
-            VStack(spacing: 20) {
+        HStack(alignment: .top, spacing: 20) {
+            // Left column: mini drop zone + video preview + video info
+            VStack(spacing: 16) {
                 miniDropZone
                 VideoPreviewView(url: viewModel.inputVideoURL)
-            }
-            .frame(minWidth: 320, maxWidth: .infinity, alignment: .top)
-
-            // Right column: info + settings + actions/progress
-            VStack(spacing: 20) {
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 280)
                 videoInfoSection
-                encodingOptionsSection
-                actionButtons
-
-                if viewModel.encodingState == .encoding {
-                    progressSection
-                }
-
-                if case .completed = viewModel.encodingState {
-                    completionSection
-                }
-
-                if case .failed(let error) = viewModel.encodingState {
-                    errorSection(error)
-                }
             }
-            .frame(minWidth: 360, maxWidth: .infinity, alignment: .top)
+            .frame(minWidth: 400, maxWidth: .infinity, alignment: .top)
+
+            // Right column: settings
+            VStack(spacing: 12) {
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(spacing: 16) {
+                        encodingOptionsSection
+
+                        if viewModel.encodingState == .encoding {
+                            progressSection
+                        }
+
+                        if case .completed = viewModel.encodingState {
+                            completionSection
+                        }
+
+                        if case .failed(let error) = viewModel.encodingState {
+                            errorSection(error)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .top)
+                    .padding(.bottom, 12)
+                }
+
+                // Actions outside ScrollView to avoid shadow clipping
+                actionButtons
+            }
+            .frame(minWidth: 400, maxWidth: .infinity, alignment: .top)
         }
     }
 
@@ -272,8 +283,12 @@ struct ContentView: View {
             .controlSize(.small)
         }
         .padding(16)
-        .background(.thinMaterial)
+        .background(Color(NSColor.controlBackgroundColor))
         .cornerRadius(12)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
+        )
     }
 
     private var ffmpegMissingView: some View {
@@ -300,7 +315,7 @@ struct ContentView: View {
                     Text("brew install ffmpeg")
                         .font(.system(size: 14, design: .monospaced))
                         .padding(12)
-                        .background(.thinMaterial)
+                        .background(Color(NSColor.controlBackgroundColor))
                         .cornerRadius(8)
 
                     Button(action: {
@@ -323,7 +338,7 @@ struct ContentView: View {
                 .buttonStyle(.link)
             }
             .padding(24)
-            .background(.thinMaterial)
+            .background(Color(NSColor.controlBackgroundColor))
             .cornerRadius(12)
 
             Button(action: { viewModel.findFFmpeg() }) {
@@ -496,15 +511,15 @@ struct ContentView: View {
     }
 
     private var videoInfoSection: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 12) {
             HStack {
                 Label("Video Information", systemImage: "info.circle.fill")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.system(size: 15, weight: .semibold))
                     .foregroundColor(.primary)
                 Spacer()
             }
 
-            HStack(spacing: 24) {
+            HStack(spacing: 12) {
                 InfoPill(
                     icon: "doc",
                     label: "Size",
@@ -534,35 +549,42 @@ struct ContentView: View {
                         value: "\(Int(viewModel.videoFPS))"
                     )
                 }
+
+                Spacer()
             }
         }
-        .padding(20)
-        .background(.thinMaterial)
-        .cornerRadius(16)
+        .padding(16)
+        .background(Color(NSColor.controlBackgroundColor))
+        .cornerRadius(12)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
+        )
     }
 
     private var encodingOptionsSection: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 16) {
             HStack {
                 Label("Encoding Settings", systemImage: "slider.horizontal.3")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(.primary)
                 Spacer()
                 if !viewModel.estimatedOutputSize.isEmpty {
-                    HStack(spacing: 6) {
+                    HStack(spacing: 5) {
                         Image(systemName: "arrow.down.circle.fill")
-                            .font(.system(size: 14))
+                            .font(.system(size: 13))
                         Text(viewModel.estimatedOutputSize)
-                            .font(.system(size: 14, weight: .medium))
+                            .font(.system(size: 13, weight: .medium))
                     }
                     .foregroundColor(.white)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
                     .background(Color.accentColor)
-                    .cornerRadius(20)
+                    .cornerRadius(16)
                 }
             }
 
-            VStack(spacing: 16) {
+            VStack(spacing: 14) {
                 OptionRow(label: "Codec", icon: "cpu") {
                     Picker("", selection: $viewModel.selectedCodec) {
                         ForEach(VideoCodec.allCases, id: \.self) { codec in
@@ -570,7 +592,6 @@ struct ContentView: View {
                         }
                     }
                     .pickerStyle(MenuPickerStyle())
-                    .frame(width: 200)
                 }
 
                 OptionRow(label: "Quality Preset", icon: "dial.high") {
@@ -580,7 +601,6 @@ struct ContentView: View {
                         }
                     }
                     .pickerStyle(MenuPickerStyle())
-                    .frame(width: 200)
                 }
 
                 OptionRow(label: "Frame Rate", icon: "timer") {
@@ -590,7 +610,6 @@ struct ContentView: View {
                         }
                     }
                     .pickerStyle(MenuPickerStyle())
-                    .frame(width: 200)
                 }
 
                 OptionRow(
@@ -603,7 +622,6 @@ struct ContentView: View {
                         }
                     }
                     .pickerStyle(MenuPickerStyle())
-                    .frame(width: 200)
                 }
 
                 OptionRow(
@@ -611,7 +629,6 @@ struct ContentView: View {
                     icon: "gauge.with.dots.needle.bottom.50percent"
                 ) {
                     TextField("2000", text: $viewModel.targetBitrate)
-                        .frame(width: 200)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .onChange(of: viewModel.targetBitrate) {
                             viewModel.calculateEstimatedSize()
@@ -695,14 +712,17 @@ struct ContentView: View {
                         "e.g., -crf 23",
                         text: $viewModel.customFFmpegOptions
                     )
-                    .frame(width: 200)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                 }
             }
         }
-        .padding(20)
-        .background(.thinMaterial)
-        .cornerRadius(16)
+        .padding(16)
+        .background(Color(NSColor.controlBackgroundColor))
+        .cornerRadius(12)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
+        )
     }
 
     private var actionButtons: some View {
@@ -724,6 +744,9 @@ struct ContentView: View {
             .controlSize(.large)
             .disabled(viewModel.encodingState == .encoding)
         }
+        .padding(.vertical, 8)
+        .padding(.horizontal, 4)
+        .contentShape(Rectangle())
     }
 
     private var progressSection: some View {
@@ -767,8 +790,12 @@ struct ContentView: View {
             }
         }
         .padding(20)
-        .background(.thinMaterial)
+        .background(Color(NSColor.controlBackgroundColor))
         .cornerRadius(16)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
+        )
         .cornerRadius(16)
     }
 
@@ -809,8 +836,12 @@ struct ContentView: View {
             }
         }
         .padding(20)
-        .background(.thinMaterial)
+        .background(Color(NSColor.controlBackgroundColor))
         .cornerRadius(16)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
+        )
         .cornerRadius(16)
     }
 
@@ -840,8 +871,12 @@ struct ContentView: View {
             .controlSize(.large)
         }
         .padding(20)
-        .background(.thinMaterial)
+        .background(Color(NSColor.controlBackgroundColor))
         .cornerRadius(16)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
+        )
         .cornerRadius(16)
     }
 

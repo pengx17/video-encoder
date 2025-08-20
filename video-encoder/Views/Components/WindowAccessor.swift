@@ -12,14 +12,18 @@ struct WindowAccessor: NSViewRepresentable {
                 window.titlebarAppearsTransparent = true
                 window.titleVisibility = .hidden
                 window.styleMask.insert(.fullSizeContentView)
-                // Disable user resizing so the window height remains adaptive to content
+                // Disable user resizing entirely
                 window.styleMask.remove(.resizable)
+                window.standardWindowButton(.zoomButton)?.isEnabled = false
                 window.backgroundColor = NSColor.clear
                 window.isOpaque = false
                 window.hasShadow = true
                 
-                // Force window to adapt to content size
-                window.setContentSize(window.contentView?.fittingSize ?? window.frame.size)
+                // Force window to adapt to content size and lock min/max
+                let size = window.contentView?.fittingSize ?? window.frame.size
+                window.setContentSize(size)
+                window.minSize = size
+                window.maxSize = size
             }
         }
         return view
@@ -33,14 +37,18 @@ struct WindowAccessor: NSViewRepresentable {
                 window.titleVisibility = .hidden
                 window.styleMask.insert(.fullSizeContentView)
 
-                // Disable user resizing so the window height remains adaptive to content
+                // Disable user resizing entirely
                 window.styleMask.remove(.resizable)
+                window.standardWindowButton(.zoomButton)?.isEnabled = false
                 window.backgroundColor = NSColor.clear
                 window.isOpaque = false
                 window.hasShadow = true
                 
-                // Force window to adapt to content size
-                window.setContentSize(window.contentView?.fittingSize ?? window.frame.size)
+                // Force window to adapt to content size and lock min/max
+                let size = window.contentView?.fittingSize ?? window.frame.size
+                window.setContentSize(size)
+                window.minSize = size
+                window.maxSize = size
             }
         }
     }

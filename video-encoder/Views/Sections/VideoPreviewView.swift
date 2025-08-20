@@ -11,13 +11,13 @@ struct VideoPreviewView: View {
                 ZStack {
                     RoundedRectangle(cornerRadius: 16)
                         .fill(Color.black)
-                        .frame(height: 220)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     
                     if let thumbnail = generateThumbnail(for: url) {
                         Image(nsImage: thumbnail)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(height: 220)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .cornerRadius(16)
                             .shadow(color: .black.opacity(0.2), radius: 10, y: 5)
                     } else {
