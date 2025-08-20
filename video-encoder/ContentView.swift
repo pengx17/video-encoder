@@ -219,7 +219,7 @@ struct ContentView: View {
                         Button("Cancel") {
                             viewModel.cancelEncoding()
                         }
-                        .buttonStyle(GlassProminentButtonStyle())
+                        .buttonStyle(GlassButtonStyle())
                         .controlSize(.small)
                     } else {
                         Image(systemName: "checkmark.seal.fill")
@@ -799,56 +799,6 @@ struct ContentView: View {
         .padding(.vertical, 8)
         .padding(.horizontal, 4)
         .contentShape(Rectangle())
-    }
-
-    private var progressSection: some View {
-        VStack(spacing: 16) {
-            HStack {
-                Image(systemName: "gearshape.2.fill")
-                    .font(.system(size: 20))
-                    .foregroundColor(.accentColor)
-                    .rotationEffect(.degrees(viewModel.encodingProgress * 360))
-                    .animation(
-                        .linear(duration: 1).repeatForever(autoreverses: false),
-                        value: viewModel.encodingState == .encoding
-                    )
-
-                Text("Encoding in progress...")
-                    .font(.system(size: 16, weight: .medium))
-
-                Spacer()
-
-                Text("\(Int(viewModel.encodingProgress * 100))%")
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(.accentColor)
-            }
-
-            ProgressView(value: viewModel.encodingProgress)
-                .progressViewStyle(LinearProgressViewStyle(tint: .accentColor))
-                .scaleEffect(y: 2)
-
-            HStack {
-                Text(viewModel.estimatedTimeRemaining)
-                    .font(.system(size: 13))
-                    .foregroundColor(.secondary)
-
-                Spacer()
-
-                Button("Cancel") {
-                    viewModel.cancelEncoding()
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.small)
-            }
-        }
-        .padding(20)
-        .background(Color(NSColor.controlBackgroundColor))
-        .cornerRadius(16)
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
-        )
-        .cornerRadius(16)
     }
 
     private var completionSection: some View {
