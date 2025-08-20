@@ -39,7 +39,7 @@ struct EnhancedDropArea: View {
                                     startPoint: .top,
                                     endPoint: .bottom
                                 ),
-                                style: StrokeStyle(lineWidth: isDragging ? 3 : 2, dash: isDragging ? [] : [12, 8])
+                                style: StrokeStyle(lineWidth: isDragging ? 3 : 2)
                             )
                     )
                     .shadow(color: .black.opacity(0.05), radius: 20, y: 10)

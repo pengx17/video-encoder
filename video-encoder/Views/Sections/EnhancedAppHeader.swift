@@ -41,7 +41,7 @@ struct EnhancedAppHeader: View {
             .padding(.vertical, 4)
             .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
         }
-        .frame(height: 32)
+        .frame(height: 28)
     }
 }
 

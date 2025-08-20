@@ -45,7 +45,26 @@ class VideoEncoderViewModel: ObservableObject {
     }
     
     private func findFFmpegAsync() async {
-        // Check if ffmpeg is available in common locations
+        // Prefer bundled ffmpeg inside the app (Contents/MacOS/ffmpeg or Resources/ffmpeg)
+        let bundleCandidates: [String] = [
+            Bundle.main.executableURL?
+                .deletingLastPathComponent()
+                .appendingPathComponent("ffmpeg").path,
+            Bundle.main.url(forResource: "ffmpeg", withExtension: nil)?.path,
+            Bundle.main.url(forAuxiliaryExecutable: "ffmpeg")?.path
+        ].compactMap { $0 }
+        if let bundled = bundleCandidates.first(where: { FileManager.default.isExecutableFile(atPath: $0) }) {
+            if await verifyFFmpeg(at: bundled) {
+                await MainActor.run {
+                    self.ffmpegAvailable = true
+                    self.ffmpegVersion = "FFmpeg (bundled)"
+                    self.ffmpegPath = bundled
+                }
+                return
+            }
+        }
+        
+        // Fallback: Check if ffmpeg is available in common system locations
         let possiblePaths = [
             "/opt/homebrew/bin/ffmpeg",
             "/usr/local/bin/ffmpeg",
@@ -90,6 +109,26 @@ class VideoEncoderViewModel: ObservableObject {
             self.ffmpegAvailable = false
             self.ffmpegVersion = "FFmpeg not found"
             self.ffmpegPath = nil
+        }
+    }
+    
+    private func verifyFFmpeg(at path: String) async -> Bool {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: path)
+        process.arguments = ["-version"]
+        process.standardOutput = Pipe()
+        process.standardError = Pipe()
+        do {
+            try process.run()
+            await withCheckedContinuation { continuation in
+                DispatchQueue.global(qos: .background).async {
+                    process.waitUntilExit()
+                    continuation.resume()
+                }
+            }
+            return process.terminationStatus == 0
+        } catch {
+            return false
         }
     }
     

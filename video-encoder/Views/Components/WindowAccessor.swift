@@ -2,6 +2,8 @@ import SwiftUI
 import AppKit
 
 struct WindowAccessor: NSViewRepresentable {
+
+
     func makeNSView(context: Context) -> NSView {
         let view = NSView()
         DispatchQueue.main.async {
@@ -10,13 +12,6 @@ struct WindowAccessor: NSViewRepresentable {
                 window.titlebarAppearsTransparent = true
                 window.titleVisibility = .hidden
                 window.styleMask.insert(.fullSizeContentView)
-                // Hide standard window buttons to fully remove native header UI
-                [NSWindow.ButtonType.closeButton,
-                 .miniaturizeButton,
-                 .zoomButton,
-                 .toolbarButton].forEach { type in
-                    window.standardWindowButton(type)?.isHidden = true
-                }
                 // Disable user resizing so the window height remains adaptive to content
                 window.styleMask.remove(.resizable)
                 window.backgroundColor = NSColor.clear
@@ -37,13 +32,7 @@ struct WindowAccessor: NSViewRepresentable {
                 window.titlebarAppearsTransparent = true
                 window.titleVisibility = .hidden
                 window.styleMask.insert(.fullSizeContentView)
-                // Hide standard window buttons to fully remove native header UI
-                [NSWindow.ButtonType.closeButton,
-                 .miniaturizeButton,
-                 .zoomButton,
-                 .toolbarButton].forEach { type in
-                    window.standardWindowButton(type)?.isHidden = true
-                }
+
                 // Disable user resizing so the window height remains adaptive to content
                 window.styleMask.remove(.resizable)
                 window.backgroundColor = NSColor.clear
