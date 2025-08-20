@@ -183,25 +183,80 @@ struct ContentView: View {
             Divider()
                 .background(.secondary.opacity(0.3))
 
-            HStack {
-                Image(systemName: "checkmark.seal.fill")
-                    .foregroundColor(.green)
-                    .font(.system(size: 14))
-                Text(viewModel.ffmpegVersion)
-                    .font(.system(size: 12))
-                    .foregroundColor(.secondary)
-                    .lineLimit(1)
-                Spacer()
-                if let path = viewModel.ffmpegPath {
-                    Text(path)
-                        .font(.system(size: 11, design: .monospaced))
-                        .foregroundColor(Color.secondary.opacity(0.7))
-                        .lineLimit(1)
-                        .truncationMode(.middle)
+            ZStack {
+                if viewModel.encodingState == .encoding {
+                    GeometryReader { proxy in
+                        Rectangle()
+                            .fill(Color.accentColor.opacity(0.15))
+                            .frame(width: max(0, proxy.size.width * viewModel.encodingProgress), height: proxy.size.height)
+                            .animation(.easeInOut(duration: 0.2), value: viewModel.encodingProgress)
+                            .edgesIgnoringSafeArea(.all)
+                    }
+                    .allowsHitTesting(false)
                 }
+
+                HStack(spacing: 12) {
+                    if viewModel.encodingState == .encoding {
+                        Image(systemName: "gearshape.2.fill")
+                            .foregroundColor(.accentColor)
+                            .font(.system(size: 14))
+                            .rotationEffect(.degrees(viewModel.encodingProgress * 360))
+                            .animation(
+                                .linear(duration: 1).repeatForever(autoreverses: false),
+                                value: viewModel.encodingState == .encoding
+                            )
+
+                        Text("Encoding in progress...")
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundColor(.primary)
+
+                        Spacer()
+
+                        Text("\(Int(viewModel.encodingProgress * 100))%")
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(.accentColor)
+
+                        Button("Cancel") {
+                            viewModel.cancelEncoding()
+                        }
+                        .buttonStyle(GlassProminentButtonStyle())
+                        .controlSize(.small)
+                    } else {
+                        Image(systemName: "checkmark.seal.fill")
+                            .foregroundColor(.green)
+                            .font(.system(size: 14))
+                        Text(viewModel.ffmpegVersion)
+                            .font(.system(size: 12))
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+
+                        Spacer()
+
+                        if let path = viewModel.ffmpegPath {
+                            Text(path)
+                                .font(.system(size: 11, design: .monospaced))
+                                .foregroundColor(Color.secondary.opacity(0.7))
+                                .lineLimit(1)
+                                .truncationMode(.middle)
+                        }
+
+                        Spacer()
+
+                        if viewModel.inputVideoURL != nil {
+                            HStack(spacing: 8) {
+                                Button(action: { viewModel.startEncoding() }) {
+                                    Label("Start Encoding", systemImage: "play.fill")
+                                }
+                                .buttonStyle(GlassProminentButtonStyle())
+                                .controlSize(.small)
+                                .disabled(viewModel.encodingState == .encoding)
+                            }
+                        }
+                    }
+                }
+                .padding(.horizontal, 24)
+                .padding(.vertical, 8)
             }
-            .padding(.horizontal, 24)
-            .padding(.vertical, 12)
         }
         .background(Color(NSColor.controlBackgroundColor))
         .overlay(
@@ -224,21 +279,17 @@ struct ContentView: View {
             VStack(spacing: 16) {
                 miniDropZone
                 VideoPreviewView(url: viewModel.inputVideoURL)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 280)
-                videoInfoSection
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .clipped()
+                // videoInfoSection merged into miniDropZone
             }
-            .frame(minWidth: 400, maxWidth: .infinity, alignment: .top)
+            .frame(minWidth: 400, maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
 
             // Right column: settings
             VStack(spacing: 12) {
                 ScrollView(.vertical, showsIndicators: false) {
                     VStack(spacing: 16) {
                         encodingOptionsSection
-
-                        if viewModel.encodingState == .encoding {
-                            progressSection
-                        }
 
                         if case .completed = viewModel.encodingState {
                             completionSection
@@ -249,38 +300,36 @@ struct ContentView: View {
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .top)
-                    .padding(.bottom, 12)
                 }
-
-                // Actions outside ScrollView to avoid shadow clipping
-                actionButtons
             }
             .frame(width: 480, alignment: .top)
         }
     }
 
     private var miniDropZone: some View {
-        HStack {
-            Image(systemName: "film.stack")
-                .font(.title3)
-                .foregroundColor(.secondary)
+        VStack(spacing: 12) {
+            HStack {
+                Image(systemName: "film.stack")
+                    .font(.title3)
+                    .foregroundColor(.secondary)
 
-            Text(viewModel.inputVideoURL?.lastPathComponent ?? "")
-                .font(.system(size: 14, weight: .medium))
-                .lineLimit(1)
-                .truncationMode(.middle)
+                Text(viewModel.inputVideoURL?.lastPathComponent ?? "")
+                    .font(.system(size: 14, weight: .medium))
+                    .lineLimit(1)
+                    .truncationMode(.middle)
 
-            Spacer()
+                Spacer()
 
-            Button(action: { clearVideo() }) {
-                Label(
-                    "Change Video",
-                    systemImage: "arrow.triangle.2.circlepath"
-                )
-                .font(.system(size: 13))
+                Button(action: { clearVideo() }) {
+                    Label(
+                        "Change Video",
+                        systemImage: "arrow.triangle.2.circlepath"
+                    )
+                    .font(.system(size: 13))
+                }
+                .buttonStyle(GlassButtonStyle())
+                .controlSize(.small)
             }
-            .buttonStyle(GlassButtonStyle())
-            .controlSize(.small)
         }
         .padding(16)
         .background(Color(NSColor.controlBackgroundColor))
@@ -865,6 +914,35 @@ struct ContentView: View {
                 }
 
                 Spacer()
+            }
+
+            if !viewModel.lastFFmpegLog.isEmpty {
+                DisclosureGroup {
+                    ScrollView {
+                        Text(viewModel.lastFFmpegLog)
+                            .font(.system(size: 12, design: .monospaced))
+                            .textSelection(.enabled)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(8)
+                    }
+                    .frame(maxHeight: 220)
+                    .background(Color(NSColor.controlBackgroundColor))
+                    .cornerRadius(8)
+
+                    HStack {
+                        Spacer()
+                        Button {
+                            NSPasteboard.general.clearContents()
+                            NSPasteboard.general.setString(viewModel.lastFFmpegLog, forType: .string)
+                        } label: {
+                            Label("Copy Log", systemImage: "doc.on.doc")
+                        }
+                        .buttonStyle(.bordered)
+                        .controlSize(.small)
+                    }
+                } label: {
+                    Text("Details").font(.system(size: 13, weight: .medium))
+                }
             }
 
             Button(action: { viewModel.encodingState = .idle }) {

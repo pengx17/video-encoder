@@ -36,8 +36,11 @@ struct VideoPreviewView: View {
                         .foregroundColor(.white.opacity(0.9))
                         .shadow(radius: 10)
                 }
+            } else {
+                Color.clear
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     private func generateThumbnail(for url: URL) -> NSImage? {

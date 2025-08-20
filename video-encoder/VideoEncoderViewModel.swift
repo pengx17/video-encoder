@@ -24,6 +24,7 @@ class VideoEncoderViewModel: ObservableObject {
     @Published var ffmpegVersion: String = "Checking..."
     @Published var ffmpegPath: String?
     @Published var estimatedTimeRemaining: String = ""
+    @Published var lastFFmpegLog: String = ""
     
     // Encoding options
     @Published var selectedCodec: VideoCodec = .h264
@@ -181,23 +182,22 @@ class VideoEncoderViewModel: ObservableObject {
             return
         }
         
+        // Ask user where to save the output to obtain sandbox permission
+        guard let outputURL = promptForOutputURL(defaultFrom: inputURL) else {
+            return
+        }
+        
+        outputVideoURL = outputURL
         encodingState = .encoding
         encodingProgress = 0.0
+        lastFFmpegLog = ""
         
         Task {
-            await performEncoding(inputURL: inputURL, ffmpegPath: ffmpegPath)
+            await performEncoding(inputURL: inputURL, outputURL: outputURL, ffmpegPath: ffmpegPath)
         }
     }
     
-    private func performEncoding(inputURL: URL, ffmpegPath: String) async {
-        // Generate output file path
-        let inputFilename = inputURL.deletingPathExtension().lastPathComponent
-        let outputFilename = "\(inputFilename)_encoded.mp4"
-        let outputURL = inputURL.deletingLastPathComponent().appendingPathComponent(outputFilename)
-        
-        await MainActor.run {
-            self.outputVideoURL = outputURL
-        }
+    private func performEncoding(inputURL: URL, outputURL: URL, ffmpegPath: String) async {
         
         // Build FFmpeg command
         var arguments = [
@@ -251,18 +251,47 @@ class VideoEncoderViewModel: ObservableObject {
         let pipe = Pipe()
         process.standardError = pipe
         
+        // Total output duration considering playback speed
+        let totalDurationSeconds: Double = {
+            let base = self.videoDuration
+            let factor = self.selectedSpeed.multiplier
+            guard base > 0, factor > 0 else { return 0 }
+            return base / factor
+        }()
+        
         do {
             try process.run()
             
-            // Monitor progress by parsing FFmpeg output
+            // Monitor and capture FFmpeg stderr output continuously
             let fileHandle = pipe.fileHandleForReading
-            
+            fileHandle.readabilityHandler = { handle in
+                let data = handle.availableData
+                if !data.isEmpty {
+                    if let chunk = String(data: data, encoding: .utf8) {
+                        Task { @MainActor in
+                            // Keep log size reasonable in memory
+                            let combined = (self.lastFFmpegLog + chunk)
+                            self.lastFFmpegLog = String(combined.suffix(12000))
+                            
+                            // Parse progress from `time=` tokens
+                            if let current = self.parseFFmpegTime(from: chunk), totalDurationSeconds > 0 {
+                                let progress = max(0.0, min(1.0, current / totalDurationSeconds))
+                                self.encodingProgress = progress
+                                let remaining = max(0.0, totalDurationSeconds - current)
+                                self.estimatedTimeRemaining = self.formatRemainingTime(remaining)
+                            }
+                        }
+                    }
+                }
+            }
+
             await withCheckedContinuation { continuation in
                 DispatchQueue.global(qos: .background).async {
                     process.waitUntilExit()
                     continuation.resume()
                 }
             }
+            fileHandle.readabilityHandler = nil
             
             await MainActor.run {
                 if process.terminationStatus == 0 {
@@ -273,8 +302,10 @@ class VideoEncoderViewModel: ObservableObject {
                     }
                     self.encodingState = .completed
                     self.encodingProgress = 1.0
+                    self.estimatedTimeRemaining = ""
                 } else {
-                    self.encodingState = .failed("Encoding failed with exit code \(process.terminationStatus)")
+                    let summary = "Encoding failed with exit code \(process.terminationStatus)"
+                    self.encodingState = .failed(summary)
                 }
             }
             
@@ -283,6 +314,44 @@ class VideoEncoderViewModel: ObservableObject {
                 self.encodingState = .failed("Failed to start encoding: \(error.localizedDescription)")
             }
         }
+    }
+
+    private func parseFFmpegTime(from text: String) -> Double? {
+        // Look for the last occurrence of "time=HH:MM:SS.xx" and convert to seconds
+        guard let range = text.range(of: "time=", options: .backwards) else { return nil }
+        let after = text[range.upperBound...]
+        let token = after.split(separator: " ", maxSplits: 1, omittingEmptySubsequences: true).first ?? Substring("")
+        let timeString = token.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !timeString.isEmpty else { return nil }
+        // Expected formats: HH:MM:SS, HH:MM:SS.mmm
+        let parts = timeString.split(separator: ":")
+        guard parts.count == 3 else { return nil }
+        let hours = Double(parts[0]) ?? 0
+        let minutes = Double(parts[1]) ?? 0
+        let seconds = Double(parts[2]) ?? 0
+        return max(0.0, hours * 3600 + minutes * 60 + seconds)
+    }
+
+    private func formatRemainingTime(_ seconds: Double) -> String {
+        let total = Int(seconds.rounded())
+        let mins = total / 60
+        let secs = total % 60
+        return String(format: "%d:%02d remaining", mins, secs)
+    }
+    
+    private func promptForOutputURL(defaultFrom inputURL: URL) -> URL? {
+        let inputFilename = inputURL.deletingPathExtension().lastPathComponent
+        let suggestedName = "\(inputFilename)_encoded.mp4"
+        let panel = NSSavePanel()
+        panel.allowedFileTypes = ["mp4"]
+        panel.nameFieldStringValue = suggestedName
+        panel.canCreateDirectories = true
+        panel.directoryURL = inputURL.deletingLastPathComponent()
+        let response = panel.runModal()
+        if response == .OK, let url = panel.url {
+            return url
+        }
+        return nil
     }
     
     func cancelEncoding() {
