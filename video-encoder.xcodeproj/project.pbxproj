@@ -11,8 +11,6 @@
 		F8EA36B82E5560AE00E7049B /* video_encoderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8EA36AC2E5560AE00E7049B /* video_encoderApp.swift */; };
 		F8EA36B92E5560AE00E7049B /* VideoEncoderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8EA36AD2E5560AE00E7049B /* VideoEncoderViewModel.swift */; };
 		F8EA36BA2E5560AE00E7049B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8EA36A92E5560AE00E7049B /* Assets.xcassets */; };
-		F8EA36D92E557C6A00E7049B /* ffmpeg in Resources */ = {isa = PBXBuildFile; fileRef = F8EA36D82E557C6A00E7049B /* ffmpeg */; };
-		F8EA370D2E55B58E00E7049B /* file_example_MP4_480_1_5MG.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = F8EA370C2E55B58E00E7049B /* file_example_MP4_480_1_5MG.mp4 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,8 +36,6 @@
 		F8EA36AB2E5560AE00E7049B /* video_encoder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = video_encoder.entitlements; sourceTree = "<group>"; };
 		F8EA36AC2E5560AE00E7049B /* video_encoderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = video_encoderApp.swift; sourceTree = "<group>"; };
 		F8EA36AD2E5560AE00E7049B /* VideoEncoderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoEncoderViewModel.swift; sourceTree = "<group>"; };
-		F8EA36D82E557C6A00E7049B /* ffmpeg */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = ffmpeg; sourceTree = "<group>"; };
-		F8EA370C2E55B58E00E7049B /* file_example_MP4_480_1_5MG.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = file_example_MP4_480_1_5MG.mp4; sourceTree = "<group>"; };
 		F8FCDD542E5421F30013CA55 /* video-encoder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "video-encoder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8FCDD642E5421F50013CA55 /* video-encoderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "video-encoderTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8FCDD6E2E5421F50013CA55 /* video-encoderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "video-encoderUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -108,8 +104,6 @@
 				F8FCDD672E5421F50013CA55 /* video-encoderTests */,
 				F8FCDD712E5421F50013CA55 /* video-encoderUITests */,
 				F8FCDD552E5421F30013CA55 /* Products */,
-				F8EA36D82E557C6A00E7049B /* ffmpeg */,
-				F8EA370C2E55B58E00E7049B /* file_example_MP4_480_1_5MG.mp4 */,
 			);
 			sourceTree = "<group>";
 		};
@@ -244,8 +238,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8EA36BA2E5560AE00E7049B /* Assets.xcassets in Resources */,
-				F8EA370D2E55B58E00E7049B /* file_example_MP4_480_1_5MG.mp4 in Resources */,
-				F8EA36D92E557C6A00E7049B /* ffmpeg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
