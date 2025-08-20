@@ -278,9 +278,54 @@ struct ContentView: View {
             // Left column: mini drop zone + video preview + video info
             VStack(spacing: 16) {
                 miniDropZone
-                VideoPreviewView(url: viewModel.inputVideoURL)
+                VideoPreviewView(url: viewModel.inputVideoURL, isPlaying: $viewModel.isPlaying, playbackTime: $viewModel.playbackTime, trimStart: $viewModel.trimStart, trimEnd: $viewModel.trimEnd, isMuted: $viewModel.isMuted)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .clipped()
+                // Trim controls
+                if viewModel.videoDuration > 0 {
+                    VStack(spacing: 8) {
+                        HStack(spacing: 16) {
+                            Button(action: { viewModel.isPlaying.toggle() }) {
+                                Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
+                                    .foregroundColor(.white)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            
+                            Text(formatDuration(viewModel.playbackTime))
+                                .font(.system(size: 13, weight: .medium))
+                                .foregroundColor(.white)
+                            
+                            EnhancedRangeSlider(duration: viewModel.videoDuration,
+                                                lower: $viewModel.trimStart,
+                                                upper: $viewModel.trimEnd,
+                                                playhead: $viewModel.playbackTime)
+                                .frame(height: 24)
+                                .padding(.horizontal, 8)
+                                .frame(maxWidth: .infinity)
+                            
+                            Text(formatDuration(viewModel.videoDuration))
+                                .font(.system(size: 13, weight: .medium))
+                                .foregroundColor(.white)
+                            
+                            Button(action: { viewModel.isMuted.toggle() }) {
+                                Image(systemName: viewModel.isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill")
+                                    .foregroundColor(.white)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        
+                        HStack {
+                            Text(formatDuration(viewModel.trimStart))
+                                .font(.system(size: 11)).foregroundColor(.secondary)
+                            Spacer()
+                            Text(formatDuration(viewModel.trimEnd))
+                                .font(.system(size: 11)).foregroundColor(.secondary)
+                        }
+                    }
+                    .padding(.horizontal, 4)
+                }
                 // videoInfoSection merged into miniDropZone
             }
             .frame(minWidth: 400, maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -978,6 +1023,86 @@ struct ContentView: View {
     }
 }
 
-// WindowAccessor moved to Views/Components/WindowAccessor.swift
-
-// Types moved to dedicated files: InfoPill, Button styles, OptionRow
+// Enhanced slider with gradient progress and playhead
+fileprivate struct EnhancedRangeSlider: View {
+    let duration: Double
+    @Binding var lower: Double
+    @Binding var upper: Double
+    @Binding var playhead: Double
+    
+    var body: some View {
+        GeometryReader { geo in
+            let width = geo.size.width
+            let height = geo.size.height
+            let range = max(duration, 0.0001)
+            let l = max(0, min(lower, duration))
+            let u = max(l, min(upper, duration))
+            let p = max(0, min(playhead, duration))
+            let lx = CGFloat(l / range) * width
+            let ux = CGFloat(u / range) * width
+            let px = CGFloat(p / range) * width
+            
+            ZStack(alignment: .leading) {
+                Capsule().fill(Color.white.opacity(0.15)).frame(height: height / 5)
+                // Selected range base
+                Rectangle()
+                    .fill(Color.white.opacity(0.25))
+                    .frame(width: ux - lx, height: height / 5)
+                    .offset(x: lx)
+                // Progress gradient inside selected range
+                if px > lx {
+                    Rectangle()
+                        .fill(LinearGradient(colors: [.purple, .blue, .mint], startPoint: .leading, endPoint: .trailing))
+                        .frame(width: min(px, ux) - lx, height: height / 5)
+                        .offset(x: lx)
+                }
+                // Lower knob
+                knob.position(x: lx, y: height / 2)
+                    .gesture(DragGesture().onChanged { value in
+                        let x = max(0, min(width, value.location.x))
+                        let v = Double(x / width) * range
+                        lower = min(v, upper)
+                    })
+                // Upper knob
+                knob.position(x: ux, y: height / 2)
+                    .gesture(DragGesture().onChanged { value in
+                        let x = max(0, min(width, value.location.x))
+                        let v = Double(x / width) * range
+                        upper = max(v, lower)
+                    })
+                // Playhead
+                Rectangle()
+                    .fill(Color.white)
+                    .frame(width: 2, height: height)
+                    .position(x: px, y: height / 2)
+                    .gesture(DragGesture().onChanged { value in
+                        let x = max(0, min(width, value.location.x))
+                        let v = Double(x / width) * range
+                        playhead = min(max(v, lower), upper)
+                    })
+            }
+            .contentShape(Rectangle())
+            .gesture(DragGesture(minimumDistance: 0)
+                        .onChanged { value in
+                            let x = max(0, min(width, value.location.x))
+                            let v = Double(x / width) * range
+                            playhead = min(max(v, l), u)
+                        }
+                        .onEnded { value in
+                            let x = max(0, min(width, value.location.x))
+                            let v = Double(x / width) * range
+                            playhead = min(max(v, l), u)
+                        }
+            )
+        }
+    }
+    
+    private var knob: some View {
+        Capsule()
+            .fill(Color.white)
+            .overlay(Capsule().stroke(Color.black.opacity(0.2), lineWidth: 1))
+            .frame(width: 6, height: 18)
+            .shadow(radius: 1, y: 0.5)
+            .accessibilityHidden(true)
+    }
+}

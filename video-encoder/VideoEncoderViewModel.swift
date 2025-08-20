@@ -25,6 +25,9 @@ class VideoEncoderViewModel: ObservableObject {
     @Published var ffmpegPath: String?
     @Published var estimatedTimeRemaining: String = ""
     @Published var lastFFmpegLog: String = ""
+    // Trim range in seconds (relative to input). Defaults to full duration
+    @Published var trimStart: Double = 0
+    @Published var trimEnd: Double = 0
     
     // Encoding options
     @Published var selectedCodec: VideoCodec = .h264
@@ -34,6 +37,10 @@ class VideoEncoderViewModel: ObservableObject {
     @Published var targetBitrate: String = "2000"
     @Published var customFFmpegOptions: String = ""
     @Published var cropSettings = CropSettings()
+    // Playback state for preview
+    @Published var isPlaying: Bool = false
+    @Published var playbackTime: Double = 0
+    @Published var isMuted: Bool = false
     
     init() {
         findFFmpeg()
@@ -137,6 +144,9 @@ class VideoEncoderViewModel: ObservableObject {
         inputVideoURL = url
         extractVideoInfo(from: url)
         calculateEstimatedSize()
+        // Reset playback state
+        isPlaying = false
+        playbackTime = 0
     }
     
     private func extractVideoInfo(from url: URL) {
@@ -152,6 +162,9 @@ class VideoEncoderViewModel: ObservableObject {
         let duration = asset.duration
         if duration.isValid {
             videoDuration = CMTimeGetSeconds(duration)
+            // Initialize trim range to full duration
+            trimStart = 0
+            trimEnd = videoDuration
         }
         
         // Get video track info
@@ -168,9 +181,12 @@ class VideoEncoderViewModel: ObservableObject {
             return
         }
         
-        // Adjust duration by playback speed (faster -> shorter duration, slower -> longer)
+        // Use trimmed duration and adjust by playback speed
         let speedMultiplier = selectedSpeed.multiplier
-        let adjustedDuration = videoDuration / speedMultiplier
+        let clampedStart = max(0, min(trimStart, videoDuration))
+        let clampedEnd = max(clampedStart, min(trimEnd, videoDuration))
+        let trimmed = max(0, clampedEnd - clampedStart)
+        let adjustedDuration = trimmed / speedMultiplier
         let estimatedBytes = (Double(bitrate) * 1000 * adjustedDuration) / 8
         estimatedOutputSize = ByteCountFormatter.string(fromByteCount: Int64(estimatedBytes), countStyle: .file)
     }
@@ -200,12 +216,27 @@ class VideoEncoderViewModel: ObservableObject {
     private func performEncoding(inputURL: URL, outputURL: URL, ffmpegPath: String) async {
         
         // Build FFmpeg command
-        var arguments = [
+        var arguments: [String] = []
+
+        // Apply input trim if any
+        let start = max(0, min(trimStart, videoDuration))
+        let end = max(start, min(trimEnd, videoDuration))
+        let hasTrim = (end - start) > 0.01 && !(start == 0 && end == videoDuration)
+        if hasTrim {
+            arguments.append(contentsOf: ["-ss", String(format: "%.3f", start)])
+        }
+
+        arguments.append(contentsOf: [
             "-i", inputURL.path,
             "-c:v", selectedCodec == .h264 ? "libx264" : selectedCodec == .h265 ? "libx265" : "libaom-av1",
             "-preset", selectedPreset.ffmpegValue,
             "-b:v", "\(targetBitrate)k"
-        ]
+        ])
+
+        if hasTrim {
+            let duration = end - start
+            arguments.append(contentsOf: ["-t", String(format: "%.3f", duration)])
+        }
 
         // Apply playback speed using setpts (video) and atempo (audio)
         // Video speed: setpts = 1/speed * PTS
@@ -253,7 +284,9 @@ class VideoEncoderViewModel: ObservableObject {
         
         // Total output duration considering playback speed
         let totalDurationSeconds: Double = {
-            let base = self.videoDuration
+            let clampedStart = max(0, min(self.trimStart, self.videoDuration))
+            let clampedEnd = max(clampedStart, min(self.trimEnd, self.videoDuration))
+            let base = max(0, clampedEnd - clampedStart)
             let factor = self.selectedSpeed.multiplier
             guard base > 0, factor > 0 else { return 0 }
             return base / factor
@@ -343,7 +376,6 @@ class VideoEncoderViewModel: ObservableObject {
         let inputFilename = inputURL.deletingPathExtension().lastPathComponent
         let suggestedName = "\(inputFilename)_encoded.mp4"
         let panel = NSSavePanel()
-        panel.allowedFileTypes = ["mp4"]
         panel.nameFieldStringValue = suggestedName
         panel.canCreateDirectories = true
         panel.directoryURL = inputURL.deletingLastPathComponent()
