@@ -6,6 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		F8EA36B72E5560AE00E7049B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8EA36AA2E5560AE00E7049B /* ContentView.swift */; };
+		F8EA36B82E5560AE00E7049B /* video_encoderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8EA36AC2E5560AE00E7049B /* video_encoderApp.swift */; };
+		F8EA36B92E5560AE00E7049B /* VideoEncoderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8EA36AD2E5560AE00E7049B /* VideoEncoderViewModel.swift */; };
+		F8EA36BA2E5560AE00E7049B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8EA36A92E5560AE00E7049B /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		F8FCDD652E5421F50013CA55 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,15 +31,20 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F8EA36A92E5560AE00E7049B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F8EA36AA2E5560AE00E7049B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F8EA36AB2E5560AE00E7049B /* video_encoder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = video_encoder.entitlements; sourceTree = "<group>"; };
+		F8EA36AC2E5560AE00E7049B /* video_encoderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = video_encoderApp.swift; sourceTree = "<group>"; };
+		F8EA36AD2E5560AE00E7049B /* VideoEncoderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoEncoderViewModel.swift; sourceTree = "<group>"; };
 		F8FCDD542E5421F30013CA55 /* video-encoder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "video-encoder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8FCDD642E5421F50013CA55 /* video-encoderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "video-encoderTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8FCDD6E2E5421F50013CA55 /* video-encoderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "video-encoderUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		F8FCDD562E5421F30013CA55 /* video-encoder */ = {
+		F8EA36CE2E5567F200E7049B /* Views */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "video-encoder";
+			path = Views;
 			sourceTree = "<group>";
 		};
 		F8FCDD672E5421F50013CA55 /* video-encoderTests */ = {
@@ -72,10 +84,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F8EA36C12E5567E200E7049B /* video-encoder */ = {
+			isa = PBXGroup;
+			children = (
+				F8EA36CE2E5567F200E7049B /* Views */,
+				F8EA36A92E5560AE00E7049B /* Assets.xcassets */,
+				F8EA36AA2E5560AE00E7049B /* ContentView.swift */,
+				F8EA36AB2E5560AE00E7049B /* video_encoder.entitlements */,
+				F8EA36AC2E5560AE00E7049B /* video_encoderApp.swift */,
+				F8EA36AD2E5560AE00E7049B /* VideoEncoderViewModel.swift */,
+			);
+			path = "video-encoder";
+			sourceTree = "<group>";
+		};
 		F8FCDD4B2E5421F30013CA55 = {
 			isa = PBXGroup;
 			children = (
-				F8FCDD562E5421F30013CA55 /* video-encoder */,
+				F8EA36C12E5567E200E7049B /* video-encoder */,
 				F8FCDD672E5421F50013CA55 /* video-encoderTests */,
 				F8FCDD712E5421F50013CA55 /* video-encoderUITests */,
 				F8FCDD552E5421F30013CA55 /* Products */,
@@ -108,7 +133,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				F8FCDD562E5421F30013CA55 /* video-encoder */,
+				F8EA36CE2E5567F200E7049B /* Views */,
 			);
 			name = "video-encoder";
 			packageProductDependencies = (
@@ -212,6 +237,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F8EA36BA2E5560AE00E7049B /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,6 +262,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F8EA36B72E5560AE00E7049B /* ContentView.swift in Sources */,
+				F8EA36B82E5560AE00E7049B /* video_encoderApp.swift in Sources */,
+				F8EA36B92E5560AE00E7049B /* VideoEncoderViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -398,7 +427,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = UA4DC3ZN8N;
+				DEVELOPMENT_TEAM = 73YMMDVT2M;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -426,7 +455,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = UA4DC3ZN8N;
+				DEVELOPMENT_TEAM = 73YMMDVT2M;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

@@ -6,6 +6,7 @@
 import SwiftUI
 import UniformTypeIdentifiers
 import AVKit
+import AppKit
 
 struct ContentView: View {
     @StateObject private var viewModel = VideoEncoderViewModel()
@@ -14,134 +15,55 @@ struct ContentView: View {
     
     var body: some View {
         mainContentView
-            .background(.ultraThinMaterial)
             .background(WindowAccessor())
-            .fixedSize(horizontal: false, vertical: true)
     }
     
     private var mainContentView: some View {
-        ZStack {
-            // Enhanced glass background with subtle gradient
-            LinearGradient(
-                colors: [
-                    Color.clear,
-                    Color.primary.opacity(0.02)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
+        VStack(spacing: 0) {
+            // Integrated header at the top with fully opaque background
+            EnhancedAppHeader(isReady: viewModel.ffmpegAvailable)
+                .padding(.horizontal, 20)
+                .padding(.vertical, 8)
+                .frame(maxWidth: .infinity)
+                .background(Color(NSColor.controlBackgroundColor))
             
-            VStack(spacing: 0) {
-                // Simple title bar area (no buttons)
-                HStack {
-                    Color.clear
-                        .frame(width: 70, height: 28)
-                    Spacer()
-                }
-                .frame(height: 28)
-                .background(.ultraThinMaterial)
-                
-                VStack(spacing: 24) {
-                    if !viewModel.ffmpegAvailable {
-                        ffmpegMissingView
+            Rectangle()
+                .fill(Color.gray.opacity(0.2))
+                .frame(height: 1)
+            
+            // Main content area
+            VStack(spacing: 24) {
+                if !viewModel.ffmpegAvailable {
+                    ffmpegMissingView
+                } else {
+                    if viewModel.inputVideoURL == nil {
+                        enhancedDropArea
                     } else {
-                        // Enhanced App Header with glass effects
-                        enhancedAppHeader
-                        
-                        if viewModel.inputVideoURL == nil {
-                            enhancedDropArea
-                        } else {
-                            videoLoadedContent
-                        }
+                        videoLoadedContent
                     }
                 }
-                .padding(.horizontal, 30)
-                .padding(.top, 10)
-                .padding(.bottom, 50)
-                
-                // Floating footer with enhanced glass effect
-                if viewModel.ffmpegAvailable && !viewModel.ffmpegVersion.isEmpty {
-                    floatingFooter
-                }
+            }
+            .padding(.horizontal, 30)
+            .padding(.top, 24)
+            .padding(.bottom, 20)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.ultraThinMaterial)
+            
+            // Floating footer with enhanced glass effect
+            if viewModel.ffmpegAvailable && !viewModel.ffmpegVersion.isEmpty {
+                floatingFooter
             }
         }
-        .frame(minWidth: 700, idealWidth: 700)
+        .frame(
+            minWidth: viewModel.inputVideoURL != nil ? 1800 : 700,
+            idealWidth: viewModel.inputVideoURL != nil ? 1800 : 700
+        )
         .fixedSize(horizontal: false, vertical: true)
     }
     
     // MARK: - Enhanced Glass Components
     
-    
-    private var enhancedAppHeader: some View {
-        HStack {
-            // Animated app icon with glass effect
-            ZStack {
-                Circle()
-                    .fill(.regularMaterial)
-                    .frame(width: 40, height: 40)
-                    .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
-                
-                Image(systemName: "video.badge.waveform")
-                    .font(.system(size: 20))
-                    .foregroundStyle(Color.accentColor)
-                    .symbolRenderingMode(.hierarchical)
-                    .animation(.easeInOut(duration: 0.3), value: viewModel.ffmpegAvailable)
-            }
-            
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Video Encoder")
-                    .font(.system(size: 18, weight: .bold, design: .rounded))
-                    .foregroundColor(.primary)
-                Text("Compress and convert your videos with ease")
-                    .font(.system(size: 12))
-                    .foregroundColor(.secondary)
-            }
-            
-            Spacer()
-            
-            // Glass status badge
-            HStack(spacing: 8) {
-                Circle()
-                    .fill(viewModel.ffmpegAvailable ? .green : .red)
-                    .frame(width: 8, height: 8)
-                    .shadow(color: viewModel.ffmpegAvailable ? .green : .red, radius: 2)
-                
-                Text(viewModel.ffmpegAvailable ? "Ready" : "Setup Required")
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(.secondary)
-            }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(
-                        LinearGradient(
-                            colors: [.white.opacity(0.3), .clear],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        ),
-                        lineWidth: 1
-                    )
-            )
-        }
-        .padding(.vertical, 12)
-        .padding(.horizontal, 20)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20))
-        .shadow(color: .black.opacity(0.05), radius: 10, y: 5)
-        .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(
-                    LinearGradient(
-                        colors: [.white.opacity(0.2), .clear],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    ),
-                    lineWidth: 1
-                )
-        )
-    }
+
     
     private var enhancedDropArea: some View {
         VStack(spacing: 24) {
@@ -282,56 +204,34 @@ struct ContentView: View {
         )
     }
     
-    // MARK: - Original Components (preserved)
-    
-    private var appHeader: some View {
-        HStack {
-            Image(systemName: "video.badge.waveform")
-                .font(.system(size: 32))
-                .foregroundStyle(Color.accentColor)
-                .symbolRenderingMode(.hierarchical)
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Video Encoder")
-                    .font(.system(size: 24, weight: .bold, design: .rounded))
-                    .foregroundColor(.primary)
-                Text("Compress and convert your videos with ease")
-                    .font(.system(size: 14))
-                    .foregroundColor(.secondary)
-            }
-            
-            Spacer()
-        }
-        .padding(.vertical, 16)
-        .padding(.horizontal, 20)
-        .background(.thinMaterial)
-        .cornerRadius(16)
-    }
-    
     private var videoLoadedContent: some View {
-        VStack(spacing: 20) {
-            // Mini drop zone with glass effect
-            miniDropZone
-            
-            videoPreviewSection
-            
-            // Video info and encoding options
-            videoInfoSection
-            encodingOptionsSection
-            
-            actionButtons
-            
-            if viewModel.encodingState == .encoding {
-                progressSection
+        HStack(alignment: .top, spacing: 24) {
+            // Left column: mini drop zone + video preview
+            VStack(spacing: 20) {
+                miniDropZone
+                VideoPreviewView(url: viewModel.inputVideoURL)
             }
+            .frame(minWidth: 320, maxWidth: .infinity, alignment: .top)
             
-            if case .completed = viewModel.encodingState {
-                completionSection
+            // Right column: info + settings + actions/progress
+            VStack(spacing: 20) {
+                videoInfoSection
+                encodingOptionsSection
+                actionButtons
+                
+                if viewModel.encodingState == .encoding {
+                    progressSection
+                }
+                
+                if case .completed = viewModel.encodingState {
+                    completionSection
+                }
+                
+                if case .failed(let error) = viewModel.encodingState {
+                    errorSection(error)
+                }
             }
-            
-            if case .failed(let error) = viewModel.encodingState {
-                errorSection(error)
-            }
+            .frame(minWidth: 360, maxWidth: .infinity, alignment: .top)
         }
     }
     
@@ -921,176 +821,6 @@ struct ContentView: View {
     }
 }
 
-// Window accessor to enable drag-to-move functionality
-struct WindowAccessor: NSViewRepresentable {
-    func makeNSView(context: Context) -> NSView {
-        let view = NSView()
-        DispatchQueue.main.async {
-            if let window = view.window {
-                window.isMovableByWindowBackground = true
-                window.titlebarAppearsTransparent = true
-                window.titleVisibility = .hidden
-                window.styleMask.insert(.fullSizeContentView)
-                // Make window transparent with glass effect
-                window.backgroundColor = NSColor.clear
-                window.isOpaque = false
-                window.hasShadow = true
-            }
-        }
-        return view
-    }
-    
-    func updateNSView(_ nsView: NSView, context: Context) {
-        DispatchQueue.main.async {
-            if let window = nsView.window {
-                window.isMovableByWindowBackground = true
-                window.titlebarAppearsTransparent = true
-                window.titleVisibility = .hidden
-                window.styleMask.insert(.fullSizeContentView)
-                // Make window transparent with glass effect
-                window.backgroundColor = NSColor.clear
-                window.isOpaque = false
-                window.hasShadow = true
-            }
-        }
-    }
-}
+// WindowAccessor moved to Views/Components/WindowAccessor.swift
 
-// Helper Views
-struct InfoPill: View {
-    let icon: String
-    let label: String
-    let value: String
-    
-    var body: some View {
-        HStack(spacing: 8) {
-            Image(systemName: icon)
-                .font(.system(size: 12))
-                .foregroundColor(.secondary)
-            
-            VStack(alignment: .leading, spacing: 2) {
-                Text(label)
-                    .font(.system(size: 11))
-                    .foregroundColor(Color.secondary.opacity(0.7))
-                Text(value)
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(.primary)
-            }
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10))
-        .shadow(color: .black.opacity(0.05), radius: 2, y: 1)
-        .overlay(
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(
-                    LinearGradient(
-                        colors: [.white.opacity(0.2), .clear],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    ),
-                    lineWidth: 1
-                )
-        )
-    }
-}
-
-// MARK: - Glass Button Styles
-
-
-struct GlassButtonStyle: ButtonStyle {
-    @State private var isHovered = false
-    
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
-            .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(
-                        LinearGradient(
-                            colors: [.white.opacity(0.3), .clear],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        ),
-                        lineWidth: 1
-                    )
-            )
-            .scaleEffect(configuration.isPressed ? 0.98 : (isHovered ? 1.02 : 1.0))
-            .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
-            .animation(.easeInOut(duration: 0.15), value: isHovered)
-            .onHover { hovering in
-                isHovered = hovering
-            }
-    }
-}
-
-struct GlassProminentButtonStyle: ButtonStyle {
-    @State private var isHovered = false
-    
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .padding(.horizontal, 20)
-            .padding(.vertical, 14)
-            .background(
-                ZStack {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(
-                            LinearGradient(
-                                colors: [
-                                    Color.accentColor.opacity(0.9),
-                                    Color.accentColor
-                                ],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                        )
-                    
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(.regularMaterial)
-                        .opacity(0.2)
-                }
-            )
-            .foregroundColor(.white)
-            .shadow(color: Color.accentColor.opacity(0.4), radius: 8, y: 4)
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(
-                        LinearGradient(
-                            colors: [.white.opacity(0.4), .clear],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        ),
-                        lineWidth: 1
-                    )
-            )
-            .scaleEffect(configuration.isPressed ? 0.98 : (isHovered ? 1.02 : 1.0))
-            .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
-            .animation(.easeInOut(duration: 0.15), value: isHovered)
-            .onHover { hovering in
-                isHovered = hovering
-            }
-    }
-}
-
-struct OptionRow<Content: View>: View {
-    let label: String
-    let icon: String
-    let content: () -> Content
-    
-    var body: some View {
-        HStack {
-            Label(label, systemImage: icon)
-                .font(.system(size: 14))
-                .foregroundColor(.secondary)
-                .frame(width: 140, alignment: .leading)
-            
-            Spacer()
-            
-            content()
-        }
-        .padding(.vertical, 4)
-    }
-}
+// Types moved to dedicated files: InfoPill, Button styles, OptionRow

@@ -6,6 +6,7 @@
 import SwiftUI
 import Foundation
 import AVFoundation
+import AppKit
 
 @MainActor
 class VideoEncoderViewModel: ObservableObject {
@@ -132,19 +133,88 @@ class VideoEncoderViewModel: ObservableObject {
     }
     
     func startEncoding() {
+        guard let inputURL = inputVideoURL,
+              let ffmpegPath = ffmpegPath else {
+            encodingState = .failed("No input video or FFmpeg not found")
+            return
+        }
+        
         encodingState = .encoding
-        // Simulate encoding progress for demo purposes
-        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
-            Task { @MainActor in
-                self.encodingProgress += 0.02
-                self.estimatedTimeRemaining = "~\(Int((1.0 - self.encodingProgress) * 50)) seconds remaining"
-                
-                if self.encodingProgress >= 1.0 {
-                    timer.invalidate()
-                    self.encodingState = .completed
-                    self.outputFileSize = "15.2 MB"
-                    self.estimatedTimeRemaining = ""
+        encodingProgress = 0.0
+        
+        Task {
+            await performEncoding(inputURL: inputURL, ffmpegPath: ffmpegPath)
+        }
+    }
+    
+    private func performEncoding(inputURL: URL, ffmpegPath: String) async {
+        // Generate output file path
+        let inputFilename = inputURL.deletingPathExtension().lastPathComponent
+        let outputFilename = "\(inputFilename)_encoded.mp4"
+        let outputURL = inputURL.deletingLastPathComponent().appendingPathComponent(outputFilename)
+        
+        await MainActor.run {
+            self.outputVideoURL = outputURL
+        }
+        
+        // Build FFmpeg command
+        var arguments = [
+            "-i", inputURL.path,
+            "-c:v", selectedCodec == .h264 ? "libx264" : selectedCodec == .h265 ? "libx265" : "libaom-av1",
+            "-preset", selectedPreset.ffmpegValue,
+            "-b:v", "\(targetBitrate)k"
+        ]
+        
+        // Add FPS option if not keeping original
+        if selectedFPS != .keep {
+            let fps = selectedFPS == .fps24 ? "24" : selectedFPS == .fps30 ? "30" : "60"
+            arguments.append(contentsOf: ["-r", fps])
+        }
+        
+        // Add custom options if provided
+        if !customFFmpegOptions.isEmpty {
+            arguments.append(contentsOf: customFFmpegOptions.components(separatedBy: " "))
+        }
+        
+        arguments.append(contentsOf: ["-y", outputURL.path]) // -y to overwrite
+        
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: ffmpegPath)
+        process.arguments = arguments
+        
+        let pipe = Pipe()
+        process.standardError = pipe
+        
+        do {
+            try process.run()
+            
+            // Monitor progress by parsing FFmpeg output
+            let fileHandle = pipe.fileHandleForReading
+            
+            await withCheckedContinuation { continuation in
+                DispatchQueue.global(qos: .background).async {
+                    process.waitUntilExit()
+                    continuation.resume()
                 }
+            }
+            
+            await MainActor.run {
+                if process.terminationStatus == 0 {
+                    // Get output file size
+                    if let resourceValues = try? outputURL.resourceValues(forKeys: [.fileSizeKey]),
+                       let fileSize = resourceValues.fileSize {
+                        self.outputFileSize = ByteCountFormatter.string(fromByteCount: Int64(fileSize), countStyle: .file)
+                    }
+                    self.encodingState = .completed
+                    self.encodingProgress = 1.0
+                } else {
+                    self.encodingState = .failed("Encoding failed with exit code \(process.terminationStatus)")
+                }
+            }
+            
+        } catch {
+            await MainActor.run {
+                self.encodingState = .failed("Failed to start encoding: \(error.localizedDescription)")
             }
         }
     }
@@ -156,8 +226,20 @@ class VideoEncoderViewModel: ObservableObject {
     }
     
     func openOutputFolder() {
-        // Mock implementation - would open Finder to output location
-        NSWorkspace.shared.open(FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first!)
+        guard let outputURL = outputVideoURL else {
+            // Fallback to Downloads if no output file
+            NSWorkspace.shared.open(FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first!)
+            return
+        }
+        
+        // Check if the output file exists
+        if FileManager.default.fileExists(atPath: outputURL.path) {
+            // Select the file in Finder
+            NSWorkspace.shared.activateFileViewerSelecting([outputURL])
+        } else {
+            // Open the containing folder if file doesn't exist
+            NSWorkspace.shared.open(outputURL.deletingLastPathComponent())
+        }
     }
 }
 
@@ -194,6 +276,20 @@ enum VideoPreset: CaseIterable {
         case .slow: return "Slow"
         case .slower: return "Slower"
         case .veryslow: return "Very Slow"
+        }
+    }
+    
+    var ffmpegValue: String {
+        switch self {
+        case .ultrafast: return "ultrafast"
+        case .superfast: return "superfast"
+        case .veryfast: return "veryfast"
+        case .faster: return "faster"
+        case .fast: return "fast"
+        case .medium: return "medium"
+        case .slow: return "slow"
+        case .slower: return "slower"
+        case .veryslow: return "veryslow"
         }
     }
 }
